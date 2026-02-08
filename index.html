@@ -2,8 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GitSnap | Studio</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+
+    <title>GitSnap | GitHub Repo to Card Generator</title>
+    <meta
+      name="description"
+      content="Transform any GitHub repository into a beautiful, professional artifact card. Best for portfolios, sharing 'repo to card' on social media."
+    />
+    <meta
+      name="keywords"
+      content="github, github repo, github repository, repo to card, portfolio artifact, git snap"
+    />
+
+    <meta name="google-site-verification" content="YOUR_CODE_HERE" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap');
@@ -11,32 +26,18 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
         transition: background-color 0.5s ease, color 0.5s ease;
         margin: 0;
+        overflow-x: hidden; /* Prevents side-scrolling on mobile */
       }
-      .theme-midnight {
-        background: #0a0a0b;
-        color: #fff;
-      }
-      .theme-snow {
-        background: #ffffff;
-        color: #000;
-      }
-      .theme-solar {
-        background: #fdfaf3;
-        color: #433422;
-      }
-
       .card-shadow {
         box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.25);
       }
-
-      /* THE NEW FEATURE: Glassmorphism */
       .glass-effect {
         backdrop-filter: blur(20px) saturate(160%);
         -webkit-backdrop-filter: blur(20px) saturate(160%);
       }
     </style>
   </head>
-  <body class="theme-midnight">
+  <body class="bg-[#0a0a0b]">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

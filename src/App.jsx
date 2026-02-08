@@ -12,9 +12,9 @@ import {
   Sun,
   Moon,
   Coffee,
-  Check,
   Layers,
-  ArrowUpRight,
+  Instagram,
+  X,
 } from 'lucide-react';
 
 const THEMES = {
@@ -22,7 +22,7 @@ const THEMES = {
     id: 'midnight',
     label: 'Midnight',
     bg: '#0a0a0b',
-    card: 'rgba(20, 20, 22, 0.75)', // Semi-transparent
+    card: 'rgba(20, 20, 22, 0.75)',
     text: '#fff',
     accent: '#6366f1',
     border: 'rgba(255, 255, 255, 0.15)',
@@ -31,7 +31,7 @@ const THEMES = {
     id: 'snow',
     label: 'Snow',
     bg: '#f9fafb',
-    card: 'rgba(255, 255, 255, 0.7)', // Semi-transparent
+    card: 'rgba(255, 255, 255, 0.7)',
     text: '#000',
     accent: '#2563eb',
     border: 'rgba(0, 0, 0, 0.1)',
@@ -40,12 +40,63 @@ const THEMES = {
     id: 'solar',
     label: 'Solar',
     bg: '#fdfaf3',
-    card: 'rgba(255, 252, 245, 0.8)', // Semi-transparent
+    card: 'rgba(255, 252, 245, 0.8)',
     text: '#433422',
     accent: '#d97706',
     border: 'rgba(217, 119, 6, 0.2)',
   },
 };
+
+// Modal Component for TOS and Privacy
+const Modal = ({ isOpen, onClose, title, children, theme }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="relative w-full max-w-2xl max-h-[70vh] overflow-y-auto rounded-[32px] p-8 md:p-12 shadow-2xl border"
+          style={{
+            backgroundColor: theme.bg,
+            color: theme.text,
+            borderColor: theme.border,
+          }}
+        >
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 opacity-50 hover:opacity-100 transition-opacity"
+          >
+            <X size={24} />
+          </button>
+          <h2
+            className="text-3xl font-black mb-6 tracking-tight"
+            style={{ color: theme.accent }}
+          >
+            {title}
+          </h2>
+          <div className="prose prose-invert opacity-70 text-sm leading-relaxed space-y-4">
+            {children}
+          </div>
+          <button
+            onClick={onClose}
+            className="mt-8 w-full py-4 rounded-xl font-bold uppercase tracking-widest text-[10px]"
+            style={{ backgroundColor: theme.accent, color: '#fff' }}
+          >
+            Acknowledge
+          </button>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+);
 
 export default function App() {
   const [theme, setTheme] = useState(THEMES.midnight);
@@ -53,6 +104,7 @@ export default function App() {
   const [url, setUrl] = useState('');
   const [data, setData] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const [activeModal, setActiveModal] = useState(null); // 'tos' or 'privacy'
   const cardRef = useRef(null);
 
   const fetchRepo = async (e) => {
@@ -89,13 +141,8 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col items-center transition-colors duration-500 ${
-        theme.id === 'midnight'
-          ? 'theme-midnight'
-          : theme.id === 'snow'
-          ? 'theme-snow'
-          : 'theme-solar'
-      }`}
+      className="min-h-screen flex flex-col items-center transition-colors duration-500"
+      style={{ backgroundColor: theme.bg, color: theme.text }}
     >
       <nav className="w-full max-w-6xl py-10 px-8 flex justify-between items-center">
         <div
@@ -189,7 +236,6 @@ export default function App() {
                   }}
                 >
                   <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-
                   <div className="flex justify-between items-start relative z-10">
                     <div className="flex items-center gap-8">
                       <img
@@ -210,9 +256,7 @@ export default function App() {
                     </div>
                     <Github size={48} className="opacity-10" />
                   </div>
-
                   <div className="relative z-10">
-                    {/* FIXED: Smaller Repo Title Font */}
                     <h2 className="text-[80px] font-extrabold tracking-tight leading-none mb-6">
                       {data.name}
                     </h2>
@@ -221,7 +265,6 @@ export default function App() {
                         'Architecting digital solutions at scale.'}
                     </p>
                   </div>
-
                   <div className="flex justify-between items-end relative z-10">
                     <div className="flex gap-16">
                       <div className="flex flex-col gap-1">
@@ -260,7 +303,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* FIXED: Visibility of the export & share box increased */}
               <div className="flex flex-wrap justify-center gap-4 bg-gray-500/10 backdrop-blur-xl p-4 rounded-3xl border border-white/20 transition-all">
                 <button
                   onClick={() => setStep(0)}
@@ -269,7 +311,6 @@ export default function App() {
                   New Synthesis
                 </button>
                 <div className="w-px h-12 bg-current opacity-20 hidden md:block" />
-
                 <div className="flex gap-2">
                   <button
                     onClick={() =>
@@ -282,7 +323,11 @@ export default function App() {
                     <Twitter size={18} />
                   </button>
                   <button
-                    onClick={() => window.open(`https://linkedin.com`)}
+                    onClick={() =>
+                      window.open(
+                        `https://www.linkedin.com/in/arefin-al-mahi-4ba524307`
+                      )
+                    }
                     className="p-4 rounded-2xl hover:bg-current hover:text-white transition-all opacity-60 hover:opacity-100"
                   >
                     <Linkedin size={18} />
@@ -291,7 +336,6 @@ export default function App() {
                     <Share2 size={18} />
                   </button>
                 </div>
-
                 <button
                   onClick={handleDownload}
                   className="px-10 py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all active:scale-95"
@@ -311,33 +355,99 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      <footer className="w-full max-w-6xl py-12 px-8 flex flex-col md:flex-row justify-between items-center border-t border-current opacity-10 gap-8">
+      <footer className="w-full max-w-6xl py-12 px-8 flex flex-col md:flex-row justify-between items-center border-t border-current gap-8">
         <div className="flex gap-10">
           <a
-            href="#"
-            className="opacity-40 hover:opacity-100 transition-opacity"
+            href="https://github.com/Lonerhermit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-100 transition-opacity"
           >
             <Github size={20} />
           </a>
           <a
-            href="#"
-            className="opacity-40 hover:opacity-100 transition-opacity"
+            href="https://www.linkedin.com/in/arefin-al-mahi-4ba524307"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-100 transition-opacity"
           >
             <Linkedin size={20} />
           </a>
           <a
-            href="#"
-            className="opacity-40 hover:opacity-100 transition-opacity"
+            href="https://www.instagram.com/lone_rhermit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-100 transition-opacity"
           >
-            <ArrowUpRight size={20} />
+            <Instagram size={20} />
           </a>
         </div>
-        <div className="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.4em] opacity-30">
-          <span>Terms of Service</span>
-          <span>Privacy Policy</span>
-          <span>© 2026 GITSNAP STUDIO</span>
+        <div className="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.4em]">
+          <button
+            onClick={() => setActiveModal('tos')}
+            className="hover:opacity-70 transition-opacity"
+          >
+            Terms of Service
+          </button>
+          <button
+            onClick={() => setActiveModal('privacy')}
+            className="hover:opacity-70 transition-opacity"
+          >
+            Privacy Policy
+          </button>
+          <span className="opacity-100">© 2026 GITSNAP STUDIO</span>
         </div>
       </footer>
+
+      {/* Pop-up Menus */}
+      <Modal
+        isOpen={activeModal === 'tos'}
+        onClose={() => setActiveModal(null)}
+        title="Terms of Service"
+        theme={theme}
+      >
+        <p>
+          Welcome to GitSnap Studio. By using our service, you agree to the
+          following:
+        </p>
+        <p>
+          <strong>1. Usage:</strong> You may use this tool to generate visual
+          artifacts of public GitHub repositories. Do not use this service for
+          harassment or misrepresentation.
+        </p>
+        <p>
+          <strong>2. Ownership:</strong> The generated images are yours to use
+          for personal and professional portfolios. GitSnap does not claim
+          ownership of your repository data.
+        </p>
+        <p>
+          <strong>3. API Limits:</strong> We rely on the GitHub Public API.
+          Excessive requests may result in temporary IP throttling.
+        </p>
+      </Modal>
+
+      <Modal
+        isOpen={activeModal === 'privacy'}
+        onClose={() => setActiveModal(null)}
+        title="Privacy Policy"
+        theme={theme}
+      >
+        <p>Your privacy is paramount to our studio operations.</p>
+        <p>
+          <strong>Data Collection:</strong> We do not store your GitHub data on
+          our servers. All processing happens client-side or via direct API
+          calls to GitHub.
+        </p>
+        <p>
+          <strong>Cookies:</strong> We use local storage only to remember your
+          theme preferences. No tracking pixels or third-party advertising
+          cookies are used.
+        </p>
+        <p>
+          <strong>Security:</strong> We do not ask for GitHub passwords or
+          private tokens. We only access public repository information.
+        </p>
+      </Modal>
     </div>
   );
 }
